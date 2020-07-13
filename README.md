@@ -357,9 +357,9 @@
 
       3. ```javascript
          var arr = [1, 2, 3];
-         console.log(arr.join()) //1,2,3
-         console.log(arr.join(" "));1 2 3
-         console.log(arr.join("/"));1/2/3
+         console.log(arr.join()) // 1,2,3
+         console.log(arr.join(" ")); // 1 2 3
+         console.log(arr.join("/")); // 1/2/3
          ```
 
    4. concat()
@@ -402,4 +402,39 @@
 
    4. map()
 
-   5. 
+      1. 배열의 각 원소를 지정한 함수로 전달하고 해당 함수의 반환값을 배열의 원소로 저장한다.
+
+      2. ````javascript
+         var arr = [1, 2, 3];
+         var b = arr.map(function(x){
+           return x*x;
+         })
+         console.log(b) // [1, 4, 9]
+         ````
+
+   5. filter()
+
+      1. 주어진 조건에 맞는 배열의 일부를 반환한다. 이를 전달하는 함수는 조건자 함수 즉, true 나 false 를 항상 반환해야한다. 
+
+      2. ```javascript
+         var arr = [1,2,3,4,5]
+         var small = arr.filter(function(x){
+           return x>3;
+         })
+         console.log(small)  // [4, 5]
+         ```
+
+   6. every(), some()
+
+      1. 위 두 메서드는 조건자 함수이다. 
+      2. every()는 배열의 모든 원소가 해당 조건을 만족하면 true, 아니면 false 를 반환한다. 
+      3. some()은 배열의 어떤 원소가 해당 조건을 만족하면 true, 아니면 false 를 반환한다. 
+      4. 메서드의 반환값이 결정되면 해당 함수는 수행을 중단한다.
+
+10. 문자열을 배열처럼 사용
+
+    1. 문자열은 읽기 전용 배열처럼 나타난다. 대괄호([]) 를 사용해서 접근할 수 있지만 값은 바꿀 수 없다. 
+    2. push(), sort(), reverse(), splice()는 배열을 직접 수정하므로 문자열에서는 사용할 수 없다. 
+
+
+
