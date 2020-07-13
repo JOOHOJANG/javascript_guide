@@ -222,4 +222,76 @@
          console.log(obj.hasOwnProperty("toString")) // false : 상속받은 프로퍼티
          ```
 
-   5. 
+   5. 프로퍼티 Getter, Setter
+
+      1. 프로퍼티의 값은 getter/setter 메서드로 대체할 수 있다. 이렇게 정의된 프로퍼티는 단순히 값을 갖는게 아닌 '접근자 프로퍼티' 라고 한다. 
+
+      2. 프로그램이 객체의 접근자 프로퍼티 값에 접근하면 자바스크립트 엔진은 getter 메서드를 parameter 없이 호출하고 반환 값은 프로퍼티의 접근 표현식의 값이 된다. 
+
+      3. 프로퍼티의 값을 변경할때는 자바스크립트 엔진이 setter 메서드를 호출하고 할당자 = 오른쪽에 있는 값을 새로운 값으로 설정하는 것으로 받아들인다. 
+
+      4. 프로퍼티가 writable 속성을 갖는 반면에 접근자 프로퍼티는 쓰기 속성이 없다. 만약 프로퍼티가 getter/setter 메서드를 둘 다 갖고있다면 읽기/쓰기 모두 가능한 프로퍼티이며 getter만 갖고있다면 읽기 전용 프로퍼티인것이다.
+
+      5. setter method만 갖고있는 프로퍼티를 읽으려고 한다면 undefined가 반환된다. 
+
+      6. ```javascript
+         var o = {
+           // 데이터 프로퍼티
+           data_prop: value,
+           // 한 쌍의 함수로 정의된 접근자 프로퍼티
+           get accessor_prop() { },
+           set accessor_prop(value) { },
+         }
+         ```
+
+   6. 프로퍼티 속성
+
+      1. 프로퍼티로 할 수 있는 작업을 결정하는 세가지 속성이 존재한다. 
+
+         1. Writable : 프로퍼티 값이 변경 가능한지 여부
+         2. Enumerable : 프로퍼티가 열거될 수 있는지 여부
+         3. Configurable : configurable 속성뿐 아니라 writable 속성과 enumerable 속성 값의 변경 가능 여부
+
+      2. ```javascript
+         Object.defineProperty(Object.prototype,
+           "extend",       // Object.prototype.extend를 정의한다.
+           {
+             writable: true,
+             enumerable: false,      // 열거 불가능
+             configurable: true,
+             value: function(o) {
+               // Object.prototype.extend 메서드의 값은 함수다.
+               // 열거되지 않는 프로퍼티들을 포함한 고유 프로퍼티에 대해
+               var names = Object.getOwnPropertyNames(o);
+               for(var i = 0; i < names.length; i ++) {
+                 // this 객체에 이미 같은 이름의 프로퍼티가 존재하면 건너뛴다.
+                 if (names[i] in this) continue;
+                 // 객체 o의 프로퍼티 디스크립터를 가져온다.
+                 var desc = Object.getOwnPropertyDescriptor(o, names[i]);
+                 // this 객체에 프로퍼티를 생성할 때 앞에서 가져온 디스크립터 객체를 사용한다.
+                 Object.defineProperty(this, name[i], desc);
+               }
+             }
+           }
+         );
+         ```
+
+   7. 객체 속성
+
+      1. 프로토타입 속성
+      2. class 속성
+         1. 객체의 class 속성은 객체의 타입에 대한 정보를 담고 있는 문자열이다.
+         2. Object.prototype으로부터 상속되는 toString() 메서드는 객체의 타입을 아래 형태의 문자열로 반환한다.
+
+      3. extensible 속성
+         1. 객체에 새 프로퍼티를 추가할 수 있는지 결정한다. 
+         2. 목적은 '잠겨있는' 객체를 고정하고 외부에서 변경하는것을 막기 위함이다. 
+
+   8. 직렬화
+
+      1. 객체의 상태를 문자열로 변환하는 것을 의미한다. 
+      2. JSON(JavaScript Object Notation), JSON.stringfy() 메서드를 통해 객체를 직렬화하고 JSON.parse()메서드를 통해 복원할 수 있다. 
+      3. JSON.stringfy()는 객체가 가진 열거 가능한 프로퍼티만 직렬화 할 수 있다. 
+
+## 7. 배열
+
