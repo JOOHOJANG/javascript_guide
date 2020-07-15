@@ -294,7 +294,7 @@
 
       1. 객체의 상태를 문자열로 변환하는 것을 의미한다. 
       2. JSON(JavaScript Object Notation), JSON.stringfy() 메서드를 통해 객체를 직렬화하고 JSON.parse()메서드를 통해 복원할 수 있다. 
-      3. JSON.stringfy()는 객체가 가진 열거 가능한 프로퍼티만 직렬화 할 수 있다. 
+      3. JSON.stringify()는 객체가 가진 열거 가능한 프로퍼티만 직렬화 할 수 있다. 
 
 ## 7. 배열
 
@@ -482,5 +482,136 @@
          console.log(a); // 6
          ````
 
+7. 값으로서의 함수
+
+   1. 자바스크립트 함수는 값이다. 즉 변수에 할당될 수 있고 객체의 프로퍼티나 배열 원소로 저장될 수 있으며 다른 함수의 인자로도 전달될 수 있으며 기타 여러 방식으로 사용될 수 있다는 뜻이다. 
+
+   2. 자신만의 함수 프로퍼티 정의하기 
+
+      1. ```javascript
+         function factorial(n){
+           if(isFinite(n) && n>0 && n==Math.round(n)){
+             if(!(n in factorial))
+               factorial[n] = n*factorial(n-1);
+             return factorial[n]
+           }
+           else return NaN
+         }
+         factorial[1] = 1;
+         
+         //앞서 계산한 결과를 캐시하도록 자신의 프로퍼티를 사용하는 함수
+         ```
+
+8. 네임스페이스로서의 함수
+
+   1. 자바스크립트는 함수단위 유효범위를 가진다. 
+
+9. 클로저
+
+   1. 두둥등장
+
+   2. 자바스크립트는 lexical scoping (어휘적 유효범위)를 사용한다. 함수를 호출하는 시점에서의 변수 유효범위가 아닌 함수가 정의된 시점에서의 유효범위를 사용하여 함수가 사용된다는 뜻.
+
+   3. 함수 객체와 함수의 변수가 해석되는 유효범위(변수 바인딩의 집합)를 아울러 컴퓨터 과학 문헌에서는 클로저 라고 부른다.
+
+   4. 자바스크립트 함수는 클로저이다. 함수는 객체이고 함수 자신과 관련된 유효범위 체인을 가지고 있기 때문이다. 
+
+   5. ````javascript
+      var scope = "global";
+      function checkscope(){
+        var scope = "local";
+        function f(){return scope;}
+        return f();
+      }
+      checkscope(); // local
+      ````
+
+      ````javascript
+      var scope = "global";
+      function checkscope(){
+        var scope = "local";
+        function f(){return scope;}
+        return f;
+      }
+      checkscope()(); // local
+      ````
+
+      클로저는 자신을 정의한 바깥쪽 함수에 바인딩된 지역 변수를 포착한다. 
+
+   6. 
+
+      ````javascript
+      function constfuncs() {
+          var funcs = [];
+          for(var i = 0; i < 10; i++){
+            funcs[i] = function(){return i};
+          }
+          return funcs;
+      }
       
+      var funcs = constfuncs();
+      funcs[5]()         // 10이 반환된다. 클로저는 자신이 선언된 어휘적 환경을 기억한다. 
+      									 // 즉, for문은 i가 10이 되면 종료되고, 생성된 10개의 클로저는 i = 10의 값을 기억									 // 한다. 
+      
+      
+      function constfuncs() {
+          var funcs = [];
+          for(var i = 0; i < 10; i++)(function (j){
+            funcs[j] = function(){
+              return j
+            }
+          })(i);
+          return funcs;
+      }
+      
+      var funcs = constfuncs();
+      funcs[5]()         // 5가 반환된다. 
+      									 // 클로저는 자신이 선언된 어휘적 환경을 기억한다. 익명함수를 통해서 감싸져있는 클로저는 
+        								 // 자신이 선언된 어휘적 환경 즉, j값을 기억하고 5를 반환한다. 
+      ````
+
+   7. 클로저를 작성할때 주의해야할 사항은, this 는 자바스크립트 키워드이지 변수가 아니다. 따라서 모든 함수 호출에는 this 값이 있고, 바깥쪽 함수가 this 값을 별도의 변수로 저장하지 않으면 클로저는 바깥족 함수의 this값에 접근할 수 없다. 
+
+10. 함수, 프로퍼티, 메서드 생성자
+
+    1. call(), apply() 메서드
+       1. 어떤 함수를 다른 객체의 메서드처럼 간접적으로 호출할 수 있도록 한다. 
+       2. 엄격 모드에서 call(), apply()의 첫 번째 인자는 함수 내에서 this의 값이 되는데, 그 값이 원시 값, null, undefined 무엇이든 상관없다. 
+    2. 호출 가능한 객체
+       1. 모든 함수는 호출 가능한 객체지만, 모든 객체가 호출 가능한 함수는 아니다. 
+
+11. 함수형 프로그래밍
+
+    1. 함수로 배열 처리하기 ex)
+
+       1. ````javascript
+          var data = [1,1,3,5,5];
+          var total = 0;
+          
+          for(var i = 0 ; i < data.length ; total+=data[i++]);
+          var mean = total/data.length;
+          
+          total = 0;
+          for(var i =0 ; i<data.length ; i++){
+            var deviation = data[i] - mean;
+            total+= deviation * deviation;
+          }
+          var standard_deviation = Math.sqrt(total/(data.length-1));
+          
+          
+          표준편차를 구하는 위 코드를 아래처럼 바꿀 수 있다. 
+          
+          
+          var sum = function(x, y){return x+y;}
+          var square = function(x){return x*x;}
+          
+          var data = [1,1,3,5,5]
+          var mean = data.reduce(sum)/data.length;
+          var deviations = data.map(function(x){return x-mean;})
+          var standard_deviation = Math.sqrt(deviations.map(square).reduce(sum)/(data.length-1))
+          ````
+
+(내용 더 추가할 예정)
+
+## 9. 클래스와 모듈
 
